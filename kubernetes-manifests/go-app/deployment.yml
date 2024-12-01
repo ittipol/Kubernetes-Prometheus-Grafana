@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang
+spec:
+  selector:
+    matchLabels:
+      app: golang
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: golang
+    spec:
+      containers:
+      - name: golang
+        image: go-app:v1
+        imagePullPolicy: Never
+        # livenessProbe:
+        #   httpGet:
+        #     path: /healthz
+        #     port: 8009
+        #   initialDelaySeconds: 20
+        #   periodSeconds: 5
+        ports:
+        - name: http
+          containerPort: 8009
+        - name: metrics
+          containerPort: 8010
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: "3"
+          limits:
+            memory: 256Mi
+            cpu: "3"
+        # readinessProbe:
+        #   httpGet:
+        #     path: /healthz
+        #     port: http
+        #   initialDelaySeconds: 20
+        #   periodSeconds: 5
+        # livenessProbe:
+        #   httpGet:
+        #     path: /healthz
+        #     port: http
+        #   initialDelaySeconds: 20
+        #   periodSeconds: 5
+        # volumeMounts:
+        # - name: config
+        #   mountPath: /config.yml
+        #   subPath: config.yml
+        # - name: my-volume
+        #   mountPath: /tmp
+      # volumes:
+      # - name: config
+      #   configMap:
+      #     name: go-app
+      # - name: my-volume
+      #   hostPath:
+      #     path: /tmp
+      #     type: DirectoryOrCreate
+
+  

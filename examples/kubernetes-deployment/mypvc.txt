@@ -1,0 +1,2 @@
+accessModes specifies the access mode for the volume. It’s set to ReadWriteOnce, indicating that it can be mounted in read-write mode by a single node at a time.
+resources.requests.storage specifies the amount of storage requested. In this example, it requests 1 gigabyte of storage.

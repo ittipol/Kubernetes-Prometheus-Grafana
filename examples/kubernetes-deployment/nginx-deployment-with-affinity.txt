@@ -1,0 +1,4 @@
+With these affinity settings, Kubernetes will attempt to schedule the NGINX Pods on nodes labeled as nginx-node, and it will make sure that no two NGINX Pods with the label app: nginx run on the same node, promoting fault tolerance and reliability in your NGINX deployment.
+
+nodeAffinity is used to ensure that the Pods are scheduled only on nodes with a specific label. Pods will be required to be scheduled on nodes with the label node-type: nginx-node.
+podAntiAffinity is used to ensure that no two NGINX Pods with the label app: nginx are scheduled on the same node. The topologyKey specifies that the scheduling is based on the hostname of the nodes.
