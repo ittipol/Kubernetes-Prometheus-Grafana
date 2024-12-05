@@ -40,13 +40,15 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
+    restart: always
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
      - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
-      - '9090:9090'
-    restart: always
+      - '9090:9090'    
+    networks:
+      - my-net
 
   node-exporter:
     image: prom/node-exporter:latest
@@ -63,16 +65,20 @@ services:
       REDIS_ADDR: "redis:6379"
       REDIS_USER: null
       REDIS_PASSWORD: password
-    links:
+    # links:
+    #   - redis
+    #   - prometheus
+    depends_on:
       - redis
-      - prometheus
+    networks:
+      - my-net
 
   redis:
     build: ./redis
     container_name: redis
     # command: redis-server /redis.conf
     # environment:
-    #   REDIS_PASSWORD: aaa
+    #   REDIS_PASSWORD: 
     #   REDIS_TLS_ENABLED: "yes"
     #   REDIS_TLS_CERT_FILE: /usr/local/etc/redis/redis.crt
     #   REDIS_TLS_KEY_FILE: /usr/local/etc/redis/redis.key
@@ -81,6 +87,8 @@ services:
       - 6379:6379
     volumes:
       - ./data/redis:/data
+    networks:
+      - my-net
 
   blackbox-exporter:
     image: prom/blackbox-exporter
@@ -95,3 +103,7 @@ services:
     ports:
       - 8009:8009
       - 8010:8010
+
+networks:
+  my-net:
+    driver: bridge
