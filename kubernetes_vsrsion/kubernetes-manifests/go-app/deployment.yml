@@ -1,19 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: golang
+  name: go-api-deployment
+  labels:
+    app: go-api
+  # namespace: default
 spec:
   selector:
     matchLabels:
-      app: golang
+      app: go-api
   replicas: 1
   template:
     metadata:
       labels:
-        app: golang
+        app: go-api
     spec:
       containers:
-      - name: golang
+      - name: go-api
         image: go-app:v1
         imagePullPolicy: Never
         # livenessProbe:
@@ -30,10 +33,10 @@ spec:
         resources:
           requests:
             memory: 256Mi
-            cpu: "3"
+            cpu: "2"
           limits:
             memory: 256Mi
-            cpu: "3"
+            cpu: "2"
         # readinessProbe:
         #   httpGet:
         #     path: /healthz
