@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: go-api
-        image: go-app:v1
+        image: go-app:v2
         imagePullPolicy: Never
         # livenessProbe:
         #   httpGet:

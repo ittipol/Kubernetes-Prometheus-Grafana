@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  labels:
+    job: node-api
+    app: redis-service
+spec:
+  # type: LoadBalancer
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: redis-port
+      name: redis-http
+    - port: 9121
+      targetPort: exporter-port
+      name: redis-metrics
+  selector:
+    app: redis

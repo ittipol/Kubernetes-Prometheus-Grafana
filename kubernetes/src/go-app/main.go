@@ -6,6 +6,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"test_go/database"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
@@ -39,11 +40,7 @@ func main() {
 	var c Config
 	c.loadConfig("config.yml")
 
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
-		Password: "password",
-		DB:       0, // use default DB
-	})
+	rdb := initRedisConnection()
 
 	// Create Prometheus registry
 	reg := prometheus.NewRegistry()
@@ -108,7 +105,9 @@ func (h *handler) redisSet(c fiber.Ctx) error {
 
 	time.Sleep(1 * time.Second)
 
-	return c.SendString("Redis set...")
+	res := fmt.Sprintf("Redis set... KEY [%s]", key)
+
+	return c.SendString(res)
 }
 
 // func simulateTraffic(m *metrics) {
@@ -159,3 +158,13 @@ func sleep(ms int) {
 
 // 	h.dbpool = dbpool
 // }
+
+func initRedisConnection() *redis.Client {
+	return database.GetRedisConnection(
+		"",
+		"",
+		"redis-service",
+		6379,
+		0,
+	)
+}

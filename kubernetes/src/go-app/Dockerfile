@@ -23,7 +23,6 @@ WORKDIR /go-app
 # RUN export GO_ENV_MODE=production
 
 COPY --from=build /go-app/app ./
-COPY ./static/index.html ./index.html
 COPY ./config.yml ./config.yml
 
 #ENV APP_PORT=8009

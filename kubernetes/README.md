@@ -28,9 +28,10 @@ helm repo update
 # Install specific chart on Kubernetes cluster
 # helm install [RELEASE_NAME] prometheus-community/kube-prometheus-stack
 helm install prometheus prometheus-community/kube-prometheus-stack
-# or
+# helm install prometheus --namespace default --create-namespace --version 66.3.1 prometheus-community/kube-prometheus-stack
+
 # helm install [RELEASE_NAME] prometheus-community/prometheus
-helm install prometheus prometheus-community/prometheus
+# helm install prometheus prometheus-community/prometheus
 
 # Apply custom values.yaml
 # helm install prometheus [CHART_NAME] -f values.yaml
@@ -54,6 +55,52 @@ helm uninstall [RELEASE_NAME]
 ### Upgrade Chart
 ``` bash
 helm upgrade [RELEASE_NAME] prometheus-community/prometheus --install
+```
+
+### ClusterRole
+``` bash
+kubectl get clusterrole prometheus-grafana-clusterrole -o yaml
+kubectl get clusterrole prometheus-kube-state-metrics -o yaml
+kubectl get clusterrole prometheus-kube-prometheus-operator -o yaml
+kubectl get clusterrole prometheus-kube-prometheus-prometheus -o yaml
+```
+
+``` yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    meta.helm.sh/release-name: prometheus
+    meta.helm.sh/release-namespace: monitoring
+  creationTimestamp: "2024-12-07T08:17:27Z"
+  labels:
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/version: 11.3.1
+    helm.sh/chart: grafana-8.6.4
+  name: prometheus-grafana-clusterrole
+  resourceVersion: "626"
+  uid: 69c9c6c6-5484-4a2d-8595-7ffe2212a46d
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  verbs:
+  - get
+  - watch
+  - list
+
+```
+
+## Terraform
+- Install kube-prometheus-stack chart
+``` bash
+terraform init
+
+terraform apply
 ```
 
 ## Kubernetes
@@ -83,6 +130,11 @@ kubectl get statefulset prometheus-prometheus-kube-prometheus-prometheus -o yaml
 kubectl get service prometheus-kube-prometheus-prometheus -o yaml > service.yaml
 ```
 
+### Delete
+``` bash
+kubectl delete ([-f FILENAME] | [-k DIRECTORY] | TYPE [(NAME | -l label | --all)])
+```
+
 ### Forward a local port to a port on the Pod
 ``` bash
 kubectl port-forward prometheus-prometheus-kube-prometheus-prometheus-0 9090
@@ -92,6 +144,16 @@ kubectl port-forward svc/prometheus-operated 9090:9090
 kubectl port-forward prometheus-grafana-665f5c84b9-b8jp8 3000
 #or
 kubectl port-forward svc/prometheus-grafana 3000:80
+```
+
+### Shell to pod
+``` bash
+kubectl exec -it [POD_NAME] -- bash
+```
+
+### Log
+``` bash
+kubectl logs [-f] [-p] (POD | TYPE/NAME) [-c CONTAINER]
 ```
 
 ### Namespace
