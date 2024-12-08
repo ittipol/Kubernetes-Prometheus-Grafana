@@ -98,6 +98,8 @@ rules:
 ## Terraform
 - Install kube-prometheus-stack chart
 ``` bash
+cd terraform
+
 terraform init
 
 terraform apply

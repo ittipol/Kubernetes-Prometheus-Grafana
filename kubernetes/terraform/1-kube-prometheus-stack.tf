@@ -1,7 +1,7 @@
 # Install manually
 # helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 # helm repo update
-# helm install prometheus --namespace default --create-namespace --version 66.3.1 prometheus-community/kube-prometheus-stack
+# helm install prometheus --namespace default --create-namespace --version 66.3.1 --values kubernetes/terraform/values/kube-prometheus-stack.yaml prometheus-community/kube-prometheus-stack
 resource "helm_release" "prometheus" {
   name = "prometheus"
 
@@ -10,4 +10,6 @@ resource "helm_release" "prometheus" {
   namespace        = "default"
   version          = "66.3.1"
   create_namespace = true
+
+  values = [file("values/kube-prometheus-stack.yaml")]
 }
