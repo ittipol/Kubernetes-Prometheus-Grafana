@@ -1,8 +1,23 @@
 # Prometheus
-## PromQL (Prometheus Query Language) 
+## Metric type 
+- Counter 
+- Gauge 
+- Histogram 
+- Summary
+## PromQL (Prometheus Query Language)
+- https://prometheus.io/docs/prometheus/latest/querying/basics/
+- https://promlabs.com/promql-cheat-sheet/
 
 # Grafana
 ## Grafana Dashboard
+### Add data source from Prometheus
+1. Click menu "Connections" > "Add new connection"
+2. Select "Prometheus" data source
+3. Click button "Add new data source"
+4. Set Name 
+5. Set Prometheus server URL
+6. Click "Save & test"
+
 ### Searching dashboard ID
 1. Go to https://grafana.com/grafana/dashboards/
 2. Input keyword in search box (k6, redis, blackbox)
@@ -46,4 +61,5 @@ brew install minikube
 minikube start
 # or
 minikube start --cpus 2 --memory 4000 --vm-driver hyperkit
+minikube start --cpus 2 --memory 4000 --vm-driver docker
 ```

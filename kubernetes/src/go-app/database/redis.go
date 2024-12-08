@@ -15,7 +15,7 @@ func GetRedisConnection(username string, password string, host string, port int,
 	if err != nil {
 		panic(err)
 	} else {
-		println("Redis started %v:%v", host, port)
+		println("Redis started...")
 	}
 
 	return redis.NewClient(opt)

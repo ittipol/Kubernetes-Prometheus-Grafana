@@ -22,7 +22,6 @@ type Device struct {
 }
 
 type handler struct {
-
 	// Prometheus metrics
 	metrics *metrics
 
@@ -32,7 +31,17 @@ type handler struct {
 	rdb *redis.Client
 }
 
-// var counter int = 0
+var version string
+var devices []Device
+
+func init() {
+	version = "1.0.0"
+
+	devices = []Device{
+		{1, "0193a648-e11b-7ef0-941c-048ee013cd05", "1.0.0"},
+		{2, "0193a648-e11b-7133-a89e-6b5d7f9ffc85", "1.0.0"},
+	}
+}
 
 func main() {
 	// Load app config from yaml file.
@@ -45,9 +54,13 @@ func main() {
 	reg := prometheus.NewRegistry()
 	m := NewMetrics(reg)
 
+	m.devices.Set(float64(len(devices)))
+	m.info.With(prometheus.Labels{"version": version}).Set(1)
+
+	promHandler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
+
 	// Create Prometheus HTTP server to expose metrics
 	pMux := http.NewServeMux()
-	promHandler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
 	pMux.Handle("/metrics", promHandler)
 
 	// Start an HTTP server to expose Prometheus metrics in the background.
@@ -55,10 +68,6 @@ func main() {
 	fmt.Printf("metrics start %s", metricsPort)
 	go func() {
 		log.Fatal(http.ListenAndServe(metricsPort, pMux))
-
-		// router := mux.NewRouter()
-		// router.Handle("/metrics", promhttp.Handler())
-		// log.Fatal(http.ListenAndServe(metricsPort, router))
 	}()
 
 	// go simulateTraffic(m)
@@ -69,7 +78,8 @@ func main() {
 	app := fiber.New()
 
 	app.Get("/healthz", h.getHealth)
-	app.Get("/api/devices", h.redisSet)
+	app.Get("/api/devices", h.getDevices)
+	app.Get("/api/redis", h.redisSet)
 
 	appPort := fmt.Sprintf(":%d", c.AppPort)
 	log.Fatal(app.Listen(appPort))
@@ -77,21 +87,26 @@ func main() {
 
 // getHealth returns the status of the application.
 func (h *handler) getHealth(c fiber.Ctx) error {
+	now := time.Now()
+
+	h.metrics.duration.With(prometheus.Labels{"method": "GET", "status": "200"}).Observe(time.Since(now).Seconds())
+
 	return c.SendStatus(200)
 }
 
-func getDevices(c fiber.Ctx) error {
-	sleep(1000)
-	dvs := []Device{
-		{1, "5F-33-CC-1F-43-82", "2.1.6"},
-		{2, "EF-2B-C4-F5-D6-34", "2.1.6"},
-	}
+func (h *handler) getDevices(c fiber.Ctx) error {
+	now := time.Now()
 
-	return c.JSON(dvs)
+	sleep(1000)
+
+	h.metrics.duration.With(prometheus.Labels{"method": "GET", "status": "200"}).Observe(time.Since(now).Seconds())
+
+	return c.JSON(devices)
 }
 
 func (h *handler) redisSet(c fiber.Ctx) error {
 
+	now := time.Now()
 	ctx := context.Background()
 
 	value := rand.Intn(10000)
@@ -102,9 +117,12 @@ func (h *handler) redisSet(c fiber.Ctx) error {
 		panic(err)
 	}
 
-	time.Sleep(1 * time.Second)
+	// time.Sleep(1 * time.Second)
+	sleep(1000)
 
 	res := fmt.Sprintf("Redis set... KEY [%s]", key)
+
+	h.metrics.duration.With(prometheus.Labels{"method": "GET", "status": "200"}).Observe(time.Since(now).Seconds())
 
 	return c.SendString(res)
 }
@@ -118,9 +136,10 @@ func (h *handler) redisSet(c fiber.Ctx) error {
 // }
 
 func sleep(ms int) {
-	rand.Seed(time.Now().UnixNano())
 	now := time.Now()
-	n := rand.Intn(ms + now.Second())
+
+	r := rand.New(rand.NewSource(now.UnixNano()))
+	n := r.Intn(ms + now.Second())
 	time.Sleep(time.Duration(n) * time.Millisecond)
 }
 

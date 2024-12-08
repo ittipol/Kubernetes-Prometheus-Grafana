@@ -211,3 +211,14 @@ minikube ssh
 
 docker image ls
 ```
+
+## Deploy Go in Kubernetes cluster
+``` bash
+cd kubernetes-manifests/go-app
+
+kubectl apply -f deployment.yml
+
+kubectl apply -f service.yml
+
+kubectl apply -f service-monitor.yml
+```
