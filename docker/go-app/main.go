@@ -20,7 +20,6 @@ type Device struct {
 	Firmware string `json:"firmware"`
 }
 
-// handler to connect to S3 and Database
 type handler struct {
 
 	// Prometheus metrics

@@ -16,6 +16,8 @@ type Config struct {
 	// Port to expose Prometheus metrics.
 	MetricsPort int `yaml:"metricsPort"`
 
+	RedisConfig RedisConfig `yaml:"redis"`
+
 	// // OTLP Endpoint to send traces.
 	// OTLPEndpoint string `yaml:"otlpEndpoint"`
 
@@ -65,6 +67,24 @@ type Config struct {
 // 	// Database to store images.
 // 	Database string `yaml:"database"`
 // }
+
+type RedisConfig struct {
+
+	// Username to connect database.
+	Username string `yaml:"username"`
+
+	// Password to connect database.
+	Password string `yaml:"password"`
+
+	// Host to connect database.
+	Host string `yaml:"host"`
+
+	// Port to connect database.
+	Port int `yaml:"port"`
+
+	// Database to store value.
+	Database int `yaml:"database"`
+}
 
 // loadConfig loads app config from YAML file.
 func (c *Config) loadConfig(path string) {

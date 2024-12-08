@@ -21,7 +21,6 @@ type Device struct {
 	Firmware string `json:"firmware"`
 }
 
-// handler to connect to S3 and Database
 type handler struct {
 
 	// Prometheus metrics
@@ -40,7 +39,7 @@ func main() {
 	var c Config
 	c.loadConfig("config.yml")
 
-	rdb := initRedisConnection()
+	rdb := initRedisConnection(c.RedisConfig)
 
 	// Create Prometheus registry
 	reg := prometheus.NewRegistry()
@@ -159,12 +158,12 @@ func sleep(ms int) {
 // 	h.dbpool = dbpool
 // }
 
-func initRedisConnection() *redis.Client {
+func initRedisConnection(redisConfig RedisConfig) *redis.Client {
 	return database.GetRedisConnection(
-		"",
-		"",
-		"redis-service",
-		6379,
-		0,
+		redisConfig.Username,
+		redisConfig.Password,
+		redisConfig.Host,
+		redisConfig.Port,
+		redisConfig.Database,
 	)
 }
