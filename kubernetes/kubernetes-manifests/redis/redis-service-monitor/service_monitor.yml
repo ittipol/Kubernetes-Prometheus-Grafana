@@ -6,7 +6,7 @@ metadata:
     app: prometheus-redis-exporter
     # name: redis-exporter-prometheus-redis-exporter
     release: prometheus
-  # namespace: monitor
+  namespace: database-monitoring
 spec:
   jobLabel: job
   endpoints:

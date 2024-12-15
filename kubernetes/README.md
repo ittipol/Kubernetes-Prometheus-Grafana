@@ -57,6 +57,11 @@ helm uninstall [RELEASE_NAME]
 helm upgrade [RELEASE_NAME] prometheus-community/prometheus --install
 ```
 
+### Remove Helm repo
+``` bash
+helm repo remove prometheus-community
+```
+
 ### ClusterRole
 ``` bash
 kubectl get clusterrole prometheus-grafana-clusterrole -o yaml
