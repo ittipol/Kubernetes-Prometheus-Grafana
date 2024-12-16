@@ -2,16 +2,20 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: go-api-service-monitor
-  #namespace: monitoring
+  namespace: monitoring
   labels:
     release: prometheus # Matches kube-prometheus-stack release label
     app: prometheus
 spec:
   jobLabel: job
+  endpoints:
+  - port: http-metrics
+    interval: 15s
+    scrapeTimeout: 15s
+    # path: /api-path/metrics  
+  namespaceSelector:
+    matchNames:
+      - production
   selector:
     matchLabels:
       app: service-api
-  endpoints:
-  - port: http-metrics
-    interval: 10s
-    # path: /api-path/metrics

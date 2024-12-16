@@ -40,7 +40,8 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm search repo prometheus-community
 
 # Use chart name prometheus-community/prometheus-redis-exporter
-helm install redis-exporter prometheus-community/prometheus-redis-exporter -f redis-exporter/redis-exporter-values.yaml -n database-monitoring
+# helm install [RELEASE_NAME] prometheus-community/prometheus-redis-exporter
+helm install redis-exporter prometheus-community/prometheus-redis-exporter -f redis-exporter/redis-exporter-values.yaml -n database-monitoring --version 6.8.0
 
 # List releases of charts
 helm list -A

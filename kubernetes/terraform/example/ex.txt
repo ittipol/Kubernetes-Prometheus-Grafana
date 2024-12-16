@@ -1,0 +1,10 @@
+provider "aws" {
+  region = "us-west-1"
+}
+resource "aws_instance" "name_of_instance" {
+  ami           = "ami-id"
+  instance_type = "t2.micro"
+  tags = {
+    Name = "name-of-instance"
+  }
+}

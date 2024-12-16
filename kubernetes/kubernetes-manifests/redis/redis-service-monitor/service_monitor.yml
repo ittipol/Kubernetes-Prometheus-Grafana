@@ -2,16 +2,19 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: redis-service-monitor
+  namespace: database-monitoring
   labels:
     app: prometheus-redis-exporter
     # name: redis-exporter-prometheus-redis-exporter
-    release: prometheus
-  namespace: database-monitoring
+    release: prometheus  
 spec:
   jobLabel: job
   endpoints:
   - interval: 15s
     port: redis-metrics
+  namespaceSelector:
+    matchNames:
+      - redis-database
   selector:
     matchLabels:
       app: redis-service

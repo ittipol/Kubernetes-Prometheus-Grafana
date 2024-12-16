@@ -1,9 +1,13 @@
+## Kubernetes
+- API Conventions (https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md)
+- ServiceMonitor [monitoring.coreos.com/v1] (https://docs.openshift.com/container-platform/4.12/rest_api/monitoring_apis/servicemonitor-monitoring-coreos-com-v1.html)
+
 ## Helm
 - https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
 - https://artifacthub.io/packages/helm/prometheus-community/prometheus
 
 
-### Installing Helm
+### Install Helm
 ``` bash
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 
@@ -17,14 +21,19 @@ $ ./get_helm.sh
 brew install helm
 ```
 
-### Install Prometheus Chart
-#### You can then run helm search repo prometheus-community to see the charts.
+### Add repo
 ``` bash
-# Add to repositories
+# Add repo to local
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
 helm repo update
 
+# Run helm search repo prometheus-community to see the charts
+helm search repo prometheus-community
+```
+
+### Install kube-prometheus-stack chart
+``` bash
 # Install specific chart on Kubernetes cluster
 # helm install [RELEASE_NAME] prometheus-community/kube-prometheus-stack
 helm install prometheus prometheus-community/kube-prometheus-stack
@@ -101,13 +110,22 @@ rules:
 ```
 
 ## Terraform
-- Install kube-prometheus-stack chart
 ``` bash
-cd terraform
-
+# Initializes terraform working directory by installing necessary plugins (providers), setting up the backend, and initializing modules
 terraform init
 
+# Creates an execution plan, compares the desired state (defined in the configuration with the actual state of the infrastructure), and outputs the changes to be made
+# Acts as a “dry run”
+terraform plan
+
+# Terraform applies the changes required to reach the new state of the infrastructure. This is where the actual creation, modification, or deletion of infrastructure happens, making it the most critical step in the Terraform workflow
+# Actual changes
+# terraform apply [options] [plan file]
 terraform apply
+
+terraform refresh
+#or
+terraform apply -refresh-only -auto-approve
 ```
 
 ## Kubernetes
@@ -126,15 +144,21 @@ kubectl get replicaset
 
 kubectl get service
 
+# kubectl get [TYPE] [NAME_PREFIX] -o {yaml|json}
+kubectl get statefulset prometheus-prometheus-kube-prometheus-prometheus -o yaml
+# Output to file
+kubectl get service prometheus-kube-prometheus-prometheus -o yaml > service.yaml
+```
+
+### Describe
+- Search "Events:" to see an error if pod fail to start
+``` bash
 # kubectl describe [TYPE] [NAME_PREFIX]
 kubectl describe statefulset prometheus-prometheus-kube-prometheus-prometheus
 # Output to file
 kubectl describe statefulset prometheus-prometheus-kube-prometheus-prometheus > prometheus.yaml
 
-# kubectl get [TYPE] [NAME_PREFIX] -o {yaml|json}
-kubectl get statefulset prometheus-prometheus-kube-prometheus-prometheus -o yaml
-# Output to file
-kubectl get service prometheus-kube-prometheus-prometheus -o yaml > service.yaml
+kubectl describe pods redis-0 -n database-monitoring
 ```
 
 ### Delete

@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: go-api-deployment
+  namespace: production
   labels:
-    app: go-api
-  # namespace: default
+    app: go-api  
 spec:
   selector:
     matchLabels:
