@@ -179,7 +179,17 @@ kubectl port-forward svc/prometheus-grafana 3000:80
 
 ### Shell to pod
 ``` bash
+# kubectl exec [POD] -- [COMMAND]
 kubectl exec -it [POD_NAME] -- bash
+```
+
+### Run command
+``` bash
+# -c, --container string
+# See the container name
+# kubectl get pods [POD_NAME] -n jenkins -o yaml
+# Search "containers", Property "name" will be in "containers" property
+kubectl exec --namespace jenkins -it svc/jenkins -c jenkins -- /bin/cat /run/secrets/additional/chart-admin-password && echo
 ```
 
 ### Log
